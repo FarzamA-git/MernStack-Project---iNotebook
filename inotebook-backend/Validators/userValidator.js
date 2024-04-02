@@ -6,4 +6,8 @@ const userValidator = [
     body('password', 'Password should be at least 6 characters long').isLength({ min: 6 }),
 ];
 
-module.exports=userValidator;
+const loginValidator = [
+    body('email', 'Invalid email').isEmail(),
+];
+
+module.exports={userValidator,loginValidator};
