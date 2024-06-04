@@ -12,6 +12,7 @@ const JWT_SECRET_KEY='mynameisFarzam';
 
 
 router.post('/createUser', userValidator, async (req, res) => {
+    let success=false;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({ errors: errors.array() });
@@ -29,19 +30,20 @@ router.post('/createUser', userValidator, async (req, res) => {
             }
         }
         const authToken = jwt.sign(data,JWT_SECRET_KEY);
-        return res.status(200).json({authToken});
+        return res.status(200).json({success:true,authToken});
     }catch (err) {
         console.error(err);
         if (err.code === 11000 && err.keyValue) {
-            return res.status(500).json({ message: `${Object.keys(err.keyValue)} already exists` });
+            return res.status(500).json({success:false, message: `${Object.keys(err.keyValue)} already exists` });
         } else {
-            return res.status(500).json({ message: 'Server error' });
+            return res.status(500).json({success:false, message: 'Server error' });
         }
     }
 });
 
 
 router.post('/login', loginValidator, async (req, res) => {
+    let success=false;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({ errors: errors.array() });
@@ -62,10 +64,10 @@ router.post('/login', loginValidator, async (req, res) => {
             }
         }
         const authToken = jwt.sign(data,JWT_SECRET_KEY);
-        return res.status(200).json({authToken});
+        return res.status(200).json({success:true,authToken});
 
     }catch{
-        return res.status(500).json({ message:"Internal Server Error" });
+        return res.status(500).json({ success:false,message:"Internal Server Error" });
     }
 });
 
